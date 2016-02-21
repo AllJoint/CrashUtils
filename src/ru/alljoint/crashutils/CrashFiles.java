@@ -12,19 +12,19 @@ public class CrashFiles {
 
 	public static void main(String[] args) {
 		if (args.length < 1) {
-			System.out.println("Путь к папке должен быть указан");
+			System.out.println("The folder path must be specified");
 			return;
 		}
 		String sPath = args[0];
 
 		if (sPath == null || sPath.isEmpty()) {
-			System.out.println("Указанный путь не должен быть пустым");
+			System.out.println("The specified path must not be empty");
 			return;
 		}
 		
 		File path = new File(sPath);
 		if (!path.isDirectory() || !path.exists()) {
-			System.out.println("Указанный путь должен быть каталогом и должен существовать");
+			System.out.println("The specified path must be a directory and must exist");
 			return;
 		}
 		

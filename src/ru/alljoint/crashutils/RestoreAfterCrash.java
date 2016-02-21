@@ -23,7 +23,7 @@ public class RestoreAfterCrash {
 	
 	public static void main(String[] args) {
 		if (args.length < 1) {
-			System.out.println("Файл с информацией для восстановления должен быть указан");
+			System.out.println("File information for recovery should be specified");
 			return;
 		}
 		String sResFile = args[0];
