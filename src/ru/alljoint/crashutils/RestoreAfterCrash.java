@@ -9,6 +9,13 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * @author Алексей Курган
+ * 
+ * Захуяриватель
+ *
+ */
 public class RestoreAfterCrash {
 
 	private static class Part {

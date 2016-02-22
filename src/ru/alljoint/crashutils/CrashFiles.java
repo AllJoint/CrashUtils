@@ -8,6 +8,13 @@ import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.util.Random;
 
+/**
+ * 
+ * @author Алексей Курган
+ * 
+ * Разхуяриватель
+ *
+ */
 public class CrashFiles {
 
 	public static void main(String[] args) {
