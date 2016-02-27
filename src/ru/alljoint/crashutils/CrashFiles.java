@@ -124,7 +124,7 @@ public class CrashFiles {
 				else if (fSize < 512)
 					count = 4;
 				else
-					count = 64;
+					count = 32 + random.nextInt(64);
 
 				for (long i = 0; i < count; i++) {
 					int nb = random.nextInt(256);
