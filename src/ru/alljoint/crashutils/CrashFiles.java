@@ -50,9 +50,12 @@ public class CrashFiles {
 			if (file.isDirectory())
 				checkFiles(file);
 			long fSize = file.length();
+			long lmd = file.lastModified();
 			try (RandomAccessFile raf = new RandomAccessFile(file, "rws")) {
 				System.out.println(file.getAbsolutePath() + " " + fSize);
 			} catch (FileNotFoundException e) {
+			} finally {
+				file.setLastModified(lmd);
 			}
 		}
 	}
