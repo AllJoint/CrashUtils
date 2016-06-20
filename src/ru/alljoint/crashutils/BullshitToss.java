@@ -1,23 +1,14 @@
 package ru.alljoint.crashutils;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Random;
-import java.util.zip.ZipInputStream;
 
 public class BullshitToss {
-	private static ArrayList<String> ruDict = new ArrayList<>(952000);
-	private static ArrayList<String> enDict = new ArrayList<>(159000);
 	private static Random r = new Random();
 
 	public static void main(String[] args) {
@@ -56,8 +47,8 @@ public class BullshitToss {
 		}
 		
 		try {
-			readDictionary(openDictStream(ruDictPath), ruDictCharset, ruDict);
-			readDictionary(openDictStream(enDictPath), enDictCharset, enDict);
+			Dictionary dict = new Dictionary(new File(ruDictPath), ruDictCharset,
+					new File(enDictPath), enDictCharset);
 			
 			int seconds = computeSeconds(strTimeCount);
 			File wrkDir = new File(wrkPath);
@@ -67,7 +58,7 @@ public class BullshitToss {
 			}
 			
 			while (seconds > 0) {
-				File folder = new File(wrkDir, createFileName());
+				File folder = new File(wrkDir, createFileName(dict));
 				if (!folder.exists() && !folder.mkdir()) {
 					System.err.println(String.format("Can't create \"%s\" destination directory", wrkDir.getAbsolutePath()));
 					System.exit(4);
@@ -76,7 +67,7 @@ public class BullshitToss {
 				int filesCount = 3 + r.nextInt(20);
 				int flushCount;
 				for (int files = 0; files < filesCount && seconds > 0; files++) {
-					FileOutputStream fos = new FileOutputStream(new File(folder, createFileName() + ".txt"));
+					FileOutputStream fos = new FileOutputStream(new File(folder, createFileName(dict) + ".txt"));
 					OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
 					BufferedWriter bw = new BufferedWriter(osw, 32768);
 					PrintWriter pw = new PrintWriter(bw);
@@ -92,9 +83,9 @@ public class BullshitToss {
 							} else
 								first = false;
 							if (r.nextInt(100) < 5)
-								sb.append(enDict.get(r.nextInt(enDict.size())));
+								sb.append(dict.getRandomEnglishWord());
 							else
-								sb.append(ruDict.get(r.nextInt(ruDict.size())));
+								sb.append(dict.getRandomRussianWord());
 							seconds--;
 							flushCount--;
 							if (flushCount <= 0) {
@@ -116,26 +107,6 @@ public class BullshitToss {
 		
 	}
 
-	private static void readDictionary(InputStream dictStream, String charset, ArrayList<String> dict) throws IOException {
-		try (InputStreamReader isr = new InputStreamReader(dictStream, charset);
-				BufferedReader br = new BufferedReader(isr, 32768)) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				dict.add(line);
-			}
-		}
-	}
-	
-	private static InputStream openDictStream(String dictPath) throws IOException {
-		InputStream is = new FileInputStream(dictPath);
-		if (dictPath.endsWith(".zip")) {
-			ZipInputStream zis = new ZipInputStream(is);
-			zis.getNextEntry();
-			return zis;
-		}
-		return is;
-	}
-	
 	private static int computeSeconds(String timeCount) {
 		if (timeCount.endsWith("d")) {
 			return Integer.parseInt(timeCount.replace("d", "")) * 24 * 60 * 60;
@@ -147,19 +118,19 @@ public class BullshitToss {
 		return Integer.parseInt(timeCount);
 	}
 
-	private static String createFileName() {
+	private static String createFileName(Dictionary dict) {
 		boolean two = r.nextBoolean();
 		StringBuilder sb = new StringBuilder();
 		if (r.nextInt(100) < 5)
-			sb.append(enDict.get(r.nextInt(enDict.size())));
+			sb.append(dict.getRandomEnglishWord());
 		else
-			sb.append(ruDict.get(r.nextInt(ruDict.size())));
+			sb.append(dict.getRandomRussianWord());
 		if (two) {
 			sb.append('-');
 			if (r.nextInt(100) < 5)
-				sb.append(enDict.get(r.nextInt(enDict.size())));
+				sb.append(dict.getRandomEnglishWord());
 			else
-				sb.append(ruDict.get(r.nextInt(ruDict.size())));
+				sb.append(dict.getRandomRussianWord());
 		}
 		return sb.toString();
 	}
